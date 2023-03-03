@@ -5,6 +5,8 @@
 #include "MysqlConn.h"
 #include <mutex>
 #include <condition_variable>
+#include "json/json.h"
+
 
 using std::mutex;
 using std::condition_variable;
@@ -17,19 +19,22 @@ public:
 
 private:
     ConnectionPool();
+    bool parseJasonFile();
+    void produceConnection();
+    void recycleConnection();
 
 private:
     std::queue<MysqlConn*> m_connectionQueue;
     mutex m_mutex;
     condition_variable m_cond;
     string m_ip;
-    string m_user;
-    string m_passwd;
+    string m_userName;
+    string m_passWord;
     string m_dbName;
-    unsigned short port;
+    unsigned short m_port;
     int m_maxSize;
     int m_minSize;
-    int m_nowTimeOut;
+    int m_timeOut;
     int m_maxTimeOut; 
 
 };

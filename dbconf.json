@@ -1,0 +1,11 @@
+{
+    "ip" : "172.23.135.234",
+    "port" : "3306",
+    "userName" : "root",
+    "passWord" : "123456",
+    "dbNmae" : "testDb",
+    "minSize" : 100,
+    "maxSize" : 1024,
+    "timeOut" : 1000,
+    "maxTimeOut" : 5000
+}
