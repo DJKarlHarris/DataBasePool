@@ -22,6 +22,7 @@ private:
     bool parseJasonFile();
     void produceConnection();
     void recycleConnection();
+    void addConnection();
 
 private:
     std::queue<MysqlConn*> m_connectionQueue;

@@ -3,6 +3,8 @@
 
 #include <mysql/mysql.h>
 #include <string>
+#include <chrono>
+
 using std::string;
 
 class MysqlConn {
@@ -37,15 +39,22 @@ public:
     //事务回滚
     bool rollback();
 
+    //刷新时间戳
+    void flushTimePoint();
+
+    //获取存活时间
+    long long getAliveTime();
+
 private:
     //释放result资源
     void freeResult();
+
 
 private:
     MYSQL* m_conn = nullptr;
     MYSQL_RES* m_result = nullptr;
     MYSQL_ROW m_row = nullptr;
-
+    std::chrono::steady_clock::time_point m_timePoint;
 };
 
 #endif

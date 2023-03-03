@@ -1,6 +1,9 @@
 #include "MysqlConn.h"
 #include <cstdlib>
 #include <mysql/mysql.h>
+#include <chrono>
+
+using namespace std::chrono;
 
 MysqlConn::MysqlConn() {
     m_conn = mysql_init(nullptr);
@@ -72,6 +75,16 @@ void MysqlConn::freeResult() {
         mysql_free_result(m_result);
         m_result = nullptr;
     }
+}
+
+void MysqlConn::flushTimePoint() {
+    m_timePoint = steady_clock::now(); 
+}
+
+long long MysqlConn::getAliveTime() {
+    nanoseconds nanosec = steady_clock::now() - m_timePoint;
+    milliseconds millsec = duration_cast<milliseconds>(nanosec);
+    return millsec.count();
 }
 
 
