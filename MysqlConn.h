@@ -54,7 +54,7 @@ private:
     MYSQL* m_conn = nullptr;
     MYSQL_RES* m_result = nullptr;
     MYSQL_ROW m_row = nullptr;
-    std::chrono::steady_clock::time_point m_timePoint;
+    std::chrono::steady_clock::time_point m_timePoint;//记录连接生成的时间戳
 };
 
 #endif

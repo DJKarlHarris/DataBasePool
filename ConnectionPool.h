@@ -15,18 +15,34 @@ class ConnectionPool {
 public:
     ConnectionPool(const ConnectionPool& obj) = delete;
     ConnectionPool& operator=(const ConnectionPool& obj) = delete;
-    ConnectionPool* getConnection();
+    
+    //获取线程池
+    ConnectionPool* getConnectionPool(); 
+
+    //获取连接->(消费者调用)
+    std::shared_ptr<MysqlConn> getConnection();  
 
 private:
-    ConnectionPool();
-    bool parseJasonFile();
-    void produceConnection();
+    ConnectionPool();  
+
+    //解析json文件
+    bool parseJasonFile(); 
+
+    //生产连接线程函数（生产者线程）
+    void produceConnection(); 
+
+    // 回收连接线程函数
     void recycleConnection();
-    void addConnection();
+
+    //往连接队列添加连接 
+    void addConnection(); 
 
 private:
+    //连接队列
     std::queue<MysqlConn*> m_connectionQueue;
+    //互斥锁
     mutex m_mutex;
+    //条件变量
     condition_variable m_cond;
     string m_ip;
     string m_userName;
@@ -35,8 +51,8 @@ private:
     unsigned short m_port;
     int m_maxSize;
     int m_minSize;
-    int m_timeOut;
-    int m_maxTimeOut; 
+    int m_timeOut;  //用于阻塞获取连接的线程
+    int m_maxConnTimeOut; //用于销毁超时连接
 
 };
 

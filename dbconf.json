@@ -7,5 +7,5 @@
     "minSize" : 100,
     "maxSize" : 1024,
     "timeOut" : 1000,
-    "maxTimeOut" : 5000
+    "maxConnTimeOut" : 5000
 }
