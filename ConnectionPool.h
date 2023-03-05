@@ -15,6 +15,7 @@ class ConnectionPool {
 public:
     ConnectionPool(const ConnectionPool& obj) = delete;
     ConnectionPool& operator=(const ConnectionPool& obj) = delete;
+    ~ConnectionPool();
     
     //获取线程池
     ConnectionPool* getConnectionPool(); 

@@ -36,6 +36,14 @@ ConnectionPool::ConnectionPool() {
 
 }
 
+ConnectionPool::~ConnectionPool() {
+    while(!m_connectionQueue.empty()) {
+        MysqlConn* conn = m_connectionQueue.front();
+        m_connectionQueue.pop();
+        delete(conn);
+    }
+}
+
 std::shared_ptr<MysqlConn> ConnectionPool::getConnection() {
     //队列为空->阻塞
     unique_lock<mutex> locker(m_mutex);
@@ -75,19 +83,20 @@ std::shared_ptr<MysqlConn> ConnectionPool::getConnection() {
     
     return connPtr;
 }
-    
-
-    
 
 void ConnectionPool::produceConnection() {
     while(true) {
         unique_lock<mutex> locker(m_mutex);
-        //阻塞条件：连接数 > 最小连接数
+        //阻塞条件：连接数 > 最小连接数 
         //唤醒：1.消费者被唤醒，2.不满足阻塞条件被唤醒
         while(m_connectionQueue.size() > m_minSize) {
             m_cond.wait(locker);
         }
-        addConnection();
+
+        //有可能当前连接数为m_maxSize时被唤醒，此时不能再生产连接了
+        if(m_connectionQueue.size() < m_maxSize) {
+            addConnection();
+        }
 
         //唤醒阻塞的消费者线程
         m_cond.notify_all();
@@ -115,9 +124,12 @@ bool ConnectionPool::parseJasonFile() {
 }
 
 void ConnectionPool::recycleConnection() {
+
     while(true) {
         //每隔0.5s查一次队头连接是否超时
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(milliseconds(500));
+
+        std::lock_guard<mutex> locker(m_mutex);
         while(m_connectionQueue.size() > m_minSize) {
 
             MysqlConn* mysqlConn = m_connectionQueue.front();

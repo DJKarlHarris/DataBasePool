@@ -7,7 +7,7 @@ using namespace std::chrono;
 
 MysqlConn::MysqlConn() {
     m_conn = mysql_init(nullptr);
-    mysql_set_character_set(m_conn, "utf-8");
+    mysql_set_character_set(m_conn, "utf8");
 }
 
 MysqlConn::~MysqlConn() {
@@ -42,7 +42,9 @@ bool MysqlConn::query(string sql) {
 bool MysqlConn::next() {
     if(m_conn != nullptr) {
         m_row = mysql_fetch_row(m_result);
-        return true;
+        if(m_row != nullptr) {
+            return true;
+        }
     }
     return false;
 }
@@ -82,7 +84,9 @@ void MysqlConn::flushTimePoint() {
 }
 
 long long MysqlConn::getAliveTime() {
+    //获取超时时长
     nanoseconds nanosec = steady_clock::now() - m_timePoint;
+    //转换为毫秒
     milliseconds millsec = duration_cast<milliseconds>(nanosec);
     return millsec.count();
 }
