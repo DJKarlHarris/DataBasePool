@@ -1,7 +1,5 @@
-
-#测试封装mysql库
-#main : MysqlConn.cpp testMysql.cpp
-#	g++ MysqlConn.cpp testMysql.cpp -lmysqlclient -o main
+main : MysqlConn.cpp main.cpp ConnectionPool.cpp
+	g++ -g MysqlConn.cpp main.cpp ConnectionPool.cpp -L/usr/local/lib/ -lmysqlclient -l:libjsoncpp.a -o main
 
 
 

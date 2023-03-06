@@ -21,7 +21,7 @@ ConnectionPool* ConnectionPool::getConnectionPool() {
 
 ConnectionPool::ConnectionPool() {
     //解析json文件
-    if(parseJasonFile()) {
+    if(!parseJasonFile()) {
         return;
     }
     for(int i = 0; i < m_minSize; i++) {
@@ -37,6 +37,7 @@ ConnectionPool::ConnectionPool() {
 }
 
 ConnectionPool::~ConnectionPool() {
+    //可以考虑添加一个join回收子线程
     while(!m_connectionQueue.empty()) {
         MysqlConn* conn = m_connectionQueue.front();
         m_connectionQueue.pop();
@@ -110,7 +111,7 @@ bool ConnectionPool::parseJasonFile() {
     rd.parse(ifs, root);
     if(root.isObject()) {
         m_ip = root["ip"].asString();
-        m_port = root["port"].asUInt();
+        m_port = root["port"].asInt();
         m_userName = root["userName"].asString();
         m_passWord = root["passWord"].asString();
         m_dbName = root["dbName"].asString();

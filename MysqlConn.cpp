@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <mysql/mysql.h>
 #include <chrono>
+#include <iostream>
 
 using namespace std::chrono;
 
@@ -18,11 +19,16 @@ MysqlConn::~MysqlConn() {
 }
 
 bool MysqlConn::connect(string user, string passwd, string dbName, string ip, unsigned short port) {
-    MYSQL* ptr = mysql_real_connect(m_conn, ip.c_str(), user.c_str(), passwd.c_str(), dbName.c_str(), port, nullptr, 0);
+
+   MYSQL* ptr = mysql_real_connect(m_conn, ip.c_str(), user.c_str(), passwd.c_str(), dbName.c_str(), port, nullptr, 0);
+    if(ptr == nullptr) {
+        std::cout << mysql_error(m_conn) << std::endl;
+    }
     return ptr != nullptr;
 }
 
 bool MysqlConn::update(string sql) {
+   
     if(mysql_query(m_conn, sql.c_str())) {
         return false;
     }

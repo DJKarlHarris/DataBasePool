@@ -13,17 +13,19 @@ using std::condition_variable;
 
 class ConnectionPool {
 public:
+    
     ConnectionPool(const ConnectionPool& obj) = delete;
     ConnectionPool& operator=(const ConnectionPool& obj) = delete;
     ~ConnectionPool();
     
     //获取线程池
-    ConnectionPool* getConnectionPool(); 
+    static ConnectionPool* getConnectionPool(); 
 
     //获取连接->(消费者调用)
     std::shared_ptr<MysqlConn> getConnection();  
 
 private:
+    //线程池构函数
     ConnectionPool();  
 
     //解析json文件
